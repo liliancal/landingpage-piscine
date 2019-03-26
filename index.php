@@ -41,6 +41,9 @@ $buttonmore="En savoir plus";
 				left: 0;
 				text-align: center;
 			}
+			.errorMsg{
+				background: red;				
+			}
 		</style>
 	</head>
 	<body class="landing">
@@ -147,13 +150,13 @@ $buttonmore="En savoir plus";
 						<div class="container 75%">
 							<div class="row uniform 50%">
 								<div class="6u 12u$(xsmall)">
-									<input name="subject" placeholder="Name" type="text" />
+									<input name="subject" placeholder="Name" type="text" required/>
 								</div>
 								<div class="6u$ 12u$(xsmall)">
-									<input name="mail" placeholder="Email" type="email" />
+									<input name="mail" placeholder="Email" type="email" required/>
 								</div>
 								<div class="12u$">
-									<textarea name="content" placeholder="Message" rows="4"></textarea>
+									<textarea name="content" placeholder="Message" rows="4" required></textarea>
 								</div>
 							</div>
 						</div>
@@ -191,24 +194,33 @@ $buttonmore="En savoir plus";
 			</footer>
 
 		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
+			<!-- <script src="assets/js/jquery.min.js"></script> -->
+			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+			<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 			<script src="assets/js/skel.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
 			<script src="assets/js/main.js"></script>
 			<script>
 				$(function () {
-					$(".submit").click(function (event) {
+					$("form").submit(function (event) {
+						event.preventDefault();
+						$('form').validate();				
 						$.ajax({
 							type: "POST",
 							url: "sendmail.php",
 							data: $('form').serialize(),
+							dataType : "json",
 							success: function (data) {
-								$('body').append('<div class="sendMsg">Message has been sent</div>');
-								setTimeout(function(){ $('.sendMsg').remove(); }, 4000);
-							}
+								if(data == "success"){
+									$('body').append('<div class="sendMsg">Message has been sent</div>');
+								}else if(data == "error"){
+									$('body').append('<div class="sendMsg errorMsg">Error</div>');	
+								}	
+								setTimeout(function(){ $('.sendMsg').remove(); }, 4000);	
+								$('form').trigger("reset");														
+							}						
 						});
-						event.preventDefault();
 					});
 				});			
 			</script>		

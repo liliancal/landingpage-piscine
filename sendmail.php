@@ -36,7 +36,7 @@ if(!empty($_POST)){
 
     // Instantiation and passing `true` enables exceptions
     $mail = new PHPMailer(true);
-
+    $response_array['status'] = 'error'; 
     try {
         //Server settings
         $mail->SMTPDebug = 0;                                       // Enable verbose debug output
@@ -69,10 +69,13 @@ if(!empty($_POST)){
         $mail->send();
         //$message= 'Message has been sent';
         //echo '<div class="sendMsg">Message has been sent</div>';
+        $response = 'success';    
     } catch (Exception $e) {
         //$message= "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-        echo '<div class="sendMsg">Message could not be sent. Mailer Error: '.$mail->ErrorInfo.'</div>';
+        //echo '<div class="sendMsg">Message could not be sent. Mailer Error: '.$mail->ErrorInfo.'</div>';
+        $response = 'error';   
     }    
+    echo json_encode($response);
 }
 
 ?>
